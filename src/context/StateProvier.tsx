@@ -68,7 +68,7 @@ type action_type = {
 };
 
 const AppContext = createContext<{ token: string, playlists: playlist_item[], set_token: (token: string) => void, set_playlists: (playlists: playlist_item[]) => void }>({
-  token: '',
+  token: 'null',
   playlists: [],
   set_token: () => null,
   set_playlists: () => null,

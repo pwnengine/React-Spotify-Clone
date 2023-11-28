@@ -6,9 +6,10 @@ import Playlists from './Playlists'
 const Container = styled.div`
   background-color: black;
   color: #b3b3b3;
+  min-width: 160px;
   display: flex;
   flex-direction: column;
-  height: 81%;
+  height: 88dvh;
   width: 100%;
   .top_links {
     display: flex;

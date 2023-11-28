@@ -9,9 +9,10 @@ const Ul = styled.ul`
   flex-direction: column;
   gap: 1rem;
   padding: 1rem;
-  overflow: scroll;
+  overflow: auto;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255, 0.6);
+  height: 100%;
   &::-webkit-scrollbar {
 
     width: 0.7rem;
@@ -56,6 +57,22 @@ const Playlists = () => {
 
   return (
     <Ul>
+      {  
+        playlists.map(({ name, id }: playlist_item) => {
+          return ( 
+            <li key={id}>{name}</li>
+
+          );
+        })
+      }
+      {  
+        playlists.map(({ name, id }: playlist_item) => {
+          return ( 
+            <li key={id}>{name}</li>
+
+          );
+        })
+      }
       {  
         playlists.map(({ name, id }: playlist_item) => {
           return ( 

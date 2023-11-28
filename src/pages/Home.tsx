@@ -13,9 +13,11 @@ const Home = ({ token='' }: props) => {
       </>
     )
   } else {
+    return ( 
     <>
       <Login />
     </>
+    )
   }
 }
 

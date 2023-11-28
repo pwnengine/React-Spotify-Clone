@@ -1,4 +1,6 @@
-import {  } from 'react'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { useProvider } from '../context/StateProvier'
 import styled from 'styled-components'
 import NavBar from './NavBar'
 import SideBar from './SideBar';
@@ -16,7 +18,8 @@ const Container = styled.div`
   }
   .spotify_body {
     display: grid;
-    grid-template-columns: 15vw 85vw;
+    grid-template-columns: 20vw 85vw;
+    gap: 1rem;
     width: 100%;
     height: 100%;
     background: linear-gradient(transparent, rgba(0, 0, 0, 1));
@@ -31,7 +34,36 @@ const Container = styled.div`
   
 `;
 
+export type user_data = {
+  id: string,
+  name: string,
+};
+
 const Spotify = () => {
+  const { token, playlists, set_token, set_playlists } = useProvider();
+
+  const [user, set_user] = useState<user_data>({id: '', name: ''});
+
+  useEffect(() => {
+    const get_user_info = async (): Promise<user_data> => {
+      const res = await axios.get('https://api.spotify.com/v1/me/', {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      });
+
+      return {
+        id: res.data.id,
+        name: res.data.display_name,
+      };
+    };
+
+    get_user_info().then(({ id, name }: user_data) => {
+      set_user({ id, name });
+    });
+    
+  }, [token]);
+
   return (
     <Container>
       <div className="spotify_body">
@@ -40,10 +72,15 @@ const Spotify = () => {
         <SideBar />
 
         <div className="body">
-          <NavBar />      
+          <NavBar user={user} set_user={set_user} />      
 
-          <div className="contents"> <Body /> </div>
+          <div className="contents">
+            <div>{user.name}</div>    
+             <Body /> 
+          </div>
+
         </div>
+
       </div>
 
       <div className="spotify_footer"> <Footer /> </div>
