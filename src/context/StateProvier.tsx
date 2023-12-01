@@ -1,5 +1,41 @@
 import { ReactElement, createContext, useContext, useReducer } from 'react'
 
+type artist = {
+  name: string,
+};
+
+type image = {
+  url: string,
+};
+
+type album = {
+  name: string,
+  images: image[],
+  uri: string,
+}
+
+type tracks_info = {
+  id: string,
+  name: string,
+  artists: artist[],
+  album: album,
+  duration_ms: number,
+  track_number: number,
+};
+
+type tracks_type = {
+  track: tracks_info,
+};
+
+type playlist_info_type = {
+  id: string | undefined, 
+  name: string | undefined, 
+  description: string | undefined, 
+  image: string | undefined, 
+  tracks: tracks_type | undefined,
+};
+
+
 type external_url = {
   spotify: '',
 };
@@ -50,16 +86,41 @@ interface props {
 const init_state = {
   token: '',
   playlists: [],
+  selected_playlist_id: '3cEYpjA9oz9GiPac4AsH4n',
+  playlist_info: {
+    id: '', 
+    name: '', 
+    description: '', 
+    image: '', 
+    tracks: {
+      track: {
+        id: '',
+        name: '',
+        artists: [],
+        album: {
+          name: '',
+          images: [],
+          uri: ''
+        },
+        duration_ms: 0,
+        track_number: 0,
+      },
+    },
+  },
 };
 
 type state_type = {
   token: string,
   playlists: playlist_item[],
+  selected_playlist_id: string,
+  playlist_info: playlist_info_type,
 };
 
 type payload_type = {
   token: string,
   playlists: playlist_item[],
+  selected_playlist_id: string,
+  playlist_info: playlist_info_type,
 }
 
 type action_type = {
@@ -67,11 +128,43 @@ type action_type = {
   payload: payload_type;
 };
 
-const AppContext = createContext<{ token: string, playlists: playlist_item[], set_token: (token: string) => void, set_playlists: (playlists: playlist_item[]) => void }>({
+const AppContext = createContext<{ 
+  token: string, 
+  set_token: (token: string) => void, 
+  playlists: playlist_item[], 
+  set_playlists: (playlists: playlist_item[]) => void, 
+  selected_playlist_id: string, 
+  set_selected_playlist_id: (playlist_id: string) => void,
+  playlist_info: playlist_info_type,
+  set_playlist_info: (playlist_info: playlist_info_type) => void,
+}>({
   token: 'null',
-  playlists: [],
   set_token: () => null,
+  playlists: [],
   set_playlists: () => null,
+  selected_playlist_id: '',
+  set_selected_playlist_id: () => null,
+  playlist_info: {
+    id: '', 
+    name: '', 
+    description: '', 
+    image: '', 
+    tracks: {
+      track: {
+        id: '',
+        name: '',
+        artists: [],
+        album: {
+          name: '',
+          images: [],
+          uri: ''
+        },
+        duration_ms: 0,
+        track_number: 0,
+      },
+    },
+  },
+  set_playlist_info: () => null,
 });
 
 const reducer_fn = (state: state_type, action: action_type) => {
@@ -79,11 +172,17 @@ const reducer_fn = (state: state_type, action: action_type) => {
     default: 
       throw new Error(`NO CASE FOR TYPE ${action.type}`);
     case 'SET_TOKEN':
-      console.log('token changed to: ' + action.payload);
+      console.log('token changed to: ' + action.payload.token);
       return { ...state, token: action.payload.token };
     case 'SET_PLAYLISTS':
-      console.log('playlists have been set to: ' + action.payload);
+      console.log('playlists have been set to: ' + action.payload.playlists);
       return { ...state, playlists: action.payload.playlists };
+    case 'SET_SELECTED_PLAYLIST_ID':
+      console.log('currently selected playlist id set to: ' + action.payload.selected_playlist_id);
+      return { ...state, selected_playlist_id: action.payload.selected_playlist_id };
+    case 'SET_PLAYLIST_INFO':
+      console.log('playlist information has been set to: ' + action.payload.playlist_info);
+      return { ...state, playlist_info: action.payload.playlist_info };
   }
 };
 
@@ -96,6 +195,8 @@ const StateProvider = ({ children }: props) => {
       payload: {
         token: token,
         playlists: state.playlists,
+        selected_playlist_id: state.selected_playlist_id,
+        playlist_info: state.playlist_info,
       },
     });
   };
@@ -105,16 +206,47 @@ const StateProvider = ({ children }: props) => {
       type: 'SET_PLAYLISTS',
       payload: {
         token: state.token,
-        playlists: playlists
+        playlists: playlists,
+        selected_playlist_id: state.selected_playlist_id,
+        playlist_info: state.playlist_info,
+      },
+    });
+  };
+
+  const set_selected_playlist_id = (id: string) => {
+    dispatch({
+      type: 'SET_SELECTED_PLAYLIST_ID',
+      payload: {
+        token: state.token,
+        playlists: state.playlists,       
+        selected_playlist_id: id,
+        playlist_info: state.playlist_info,
+      },
+    });
+  };
+
+  const set_playlist_info = (playlist_info: playlist_info_type) => {
+    dispatch({
+      type: 'SET_PLAYLIST_INFO',
+      payload: {
+        token: state.token,
+        playlists: state.playlists,
+        selected_playlist_id: state.selected_playlist_id,
+        playlist_info: playlist_info,
+
       },
     });
   };
 
   const value = {
     token: state.token,
-    playlists: state.playlists,
     set_token,
+    playlists: state.playlists,
     set_playlists,
+    selected_playlist_id: state.selected_playlist_id,
+    set_selected_playlist_id,
+    playlist_info: state.playlist_info,
+    set_playlist_info,
   };
 
   return (

@@ -32,7 +32,7 @@ const Ul = styled.ul`
 `;
 
 const Playlists = () => {
-  const { token, playlists, set_token, set_playlists } = useProvider();
+  const { token, playlists, set_selected_playlist_id, set_playlists } = useProvider();
   useEffect(() => {
     const get_playlist_data = async () => {
       try {
@@ -41,8 +41,11 @@ const Playlists = () => {
             Authorization: 'Bearer ' + token,
           }
         }); 
-        set_playlists(res.data.items.map((val: playlist_item) => {
-          return val
+        set_playlists(res.data.items.map((val: playlist_item, index: number) => {
+          if(index === 0) {
+            set_selected_playlist_id(val.id);
+          }
+          return val;
         }));
       } catch(err) {
         console.log(err);

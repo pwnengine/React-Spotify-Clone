@@ -40,7 +40,7 @@ export type user_data = {
 };
 
 const Spotify = () => {
-  const { token, playlists, set_token, set_playlists } = useProvider();
+  const { token } = useProvider();
 
   const [user, set_user] = useState<user_data>({id: '', name: ''});
 
@@ -72,7 +72,7 @@ const Spotify = () => {
         <SideBar />
 
         <div className="body">
-          <NavBar user={user} set_user={set_user} />      
+          <NavBar user={user} />      
 
           <div className="contents">
             <div>{user.name}</div>    
