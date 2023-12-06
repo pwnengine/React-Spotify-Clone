@@ -75,7 +75,6 @@ const Spotify = () => {
           <NavBar user={user} />      
 
           <div className="contents">
-            <div>{user.name}</div>    
              <Body /> 
           </div>
 
