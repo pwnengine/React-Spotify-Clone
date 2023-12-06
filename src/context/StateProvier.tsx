@@ -1,6 +1,6 @@
 import { ReactElement, createContext, useContext, useReducer } from 'react'
 
-type artist = {
+export type artist = {
   name: string,
 };
 
@@ -8,13 +8,13 @@ type image = {
   url: string,
 };
 
-type album = {
+export type album = {
   name: string,
   images: image[],
   uri: string,
 }
 
-type tracks_info = {
+export type tracks_info = {
   id: string,
   name: string,
   artists: artist[],
@@ -23,8 +23,15 @@ type tracks_info = {
   track_number: number,
 };
 
-type tracks_type = {
-  track: tracks_info,
+export type tracks_type = {
+  id: string,
+  name: string,
+  artists: artist[],
+  image: string,
+  duration: number,
+  album: string,
+  context_uri: string,
+  track_number: number,
 };
 
 type playlist_info_type = {
@@ -32,7 +39,7 @@ type playlist_info_type = {
   name: string | undefined, 
   description: string | undefined, 
   image: string | undefined, 
-  tracks: tracks_type | undefined,
+  tracks: tracks_type[] | undefined,
 };
 
 
@@ -92,21 +99,17 @@ const init_state = {
     name: '', 
     description: '', 
     image: '', 
-    tracks: {
-      track: {
-        id: '',
+    tracks: [{
+         id: '',
         name: '',
         artists: [],
-        album: {
-          name: '',
-          images: [],
-          uri: ''
-        },
-        duration_ms: 0,
+        image: '',
+        duration: 0,
+        album: '',
+        context_uri: '',
         track_number: 0,
-      },
-    },
-  },
+      }],
+   },
 };
 
 type state_type = {
@@ -149,20 +152,18 @@ const AppContext = createContext<{
     name: '', 
     description: '', 
     image: '', 
-    tracks: {
-      track: {
+    tracks: [{
+      
         id: '',
         name: '',
         artists: [],
-        album: {
-          name: '',
-          images: [],
-          uri: ''
-        },
-        duration_ms: 0,
+        image: '',
+        duration: 0,
+        album: '',
+        context_uri: '',
         track_number: 0,
-      },
-    },
+      
+    }],
   },
   set_playlist_info: () => null,
 });

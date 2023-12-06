@@ -71,7 +71,7 @@ const Playlists = () => {
       {  
         playlists.map(({ name, id }: playlist_item) => {
           return ( 
-            <li key={id}>{name}</li>
+            <li onClick={() => set_selected_playlist_id(id)} key={id}>{name}</li>
 
           );
         })
