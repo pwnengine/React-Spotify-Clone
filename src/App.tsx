@@ -1,4 +1,4 @@
-import { useProvider} from './context/StateProvier'
+import { useProvider} from './context/StateProvider'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useEffect } from 'react'
 import Login from './pages/Login';

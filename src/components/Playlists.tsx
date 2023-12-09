@@ -1,5 +1,5 @@
 import { useEffect } from "react"
-import { useProvider, playlist_item } from "../context/StateProvier";
+import { useProvider, playlist_item } from "../context/StateProvider";
 import axios from "axios";
 import styled from 'styled-components'
 

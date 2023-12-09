@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
-import { useProvider } from '../context/StateProvier'
+import { useProvider } from '../context/StateProvider'
 import styled from 'styled-components'
 import NavBar from './NavBar'
 import SideBar from './SideBar';
@@ -19,16 +19,27 @@ const Container = styled.div`
   .spotify_body {
     display: grid;
     grid-template-columns: 20vw 85vw;
-    gap: 1rem;
+    gap: 0rem;
     width: 100%;
     height: 100%;
     background: linear-gradient(transparent, rgba(0, 0, 0, 1));
     background-color: rgb(32, 87, 100);
-    
     .body {
       width: 100%;
       height: 100%;
       overflow: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255, 0.6);
+      &::-webkit-scrollbar {
+
+        width: 0.7rem;
+        &-thumb {
+          background-color: rgba(255,255,255,0.6);
+        }
+      }
+      .contents {
+        //margin-top: -100px;
+      }
     }
   }
   
@@ -41,6 +52,25 @@ export type user_data = {
 
 const Spotify = () => {
   const { token } = useProvider();
+
+  const body_ref = useRef<HTMLDivElement>(null);
+  const [nav_bg, set_nav_bg] = useState(false);
+  const [header_bg, set_header_bg] = useState(false);
+
+  const body_scrolled = () => {
+    if(body_ref != null && body_ref != undefined) {
+      if(body_ref.current!.scrollTop >= 30) {
+        set_nav_bg(true);
+      } else {
+        set_nav_bg(false);
+      } 
+      if(body_ref.current!.scrollTop >= 268) {
+        set_header_bg(true);
+      } else {
+        set_header_bg(false);
+      } 
+    }
+  };
 
   const [user, set_user] = useState<user_data>({id: '', name: ''});
 
@@ -71,11 +101,11 @@ const Spotify = () => {
         
         <SideBar />
 
-        <div className="body">
-          <NavBar user={user} />      
+        <div className="body" ref={body_ref} onScroll={body_scrolled}>
+          <NavBar user={user} nav_bg={nav_bg} />      
 
           <div className="contents">
-             <Body /> 
+             <Body header_bg={header_bg} /> 
           </div>
 
         </div>

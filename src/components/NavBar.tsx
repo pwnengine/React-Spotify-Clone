@@ -4,17 +4,44 @@ import { CgProfile } from 'react-icons/cg'
 import { user_data } from './Spotify'
 import { IconContext } from 'react-icons';
 
-const Container = styled.div`
+interface props {
+  user: user_data;
+  nav_bg: boolean;
+}
+
+const NavBar = ({ user, nav_bg }: props) => {
+  return (
+    
+  <Container user={user} nav_bg={nav_bg}>
+    
+    <div className="search_bar">
+      <IconContext.Provider value={{ color: 'black', }}>
+        <FaSearch />
+      </IconContext.Provider>
+      <input type="text" placeholder="Artists, songs, or podcasts" />
+    </div>
+
+    <div className="avatar">
+      <CgProfile />
+      <span>{user.name}</span>
+    </div>
+
+  </Container>
+    
+  )
+}
+
+const Container = styled.div<props>`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 2rem;
-  height: 5vh;
-  width: 70vw;
+  height: 6.2vh;
   position: sticky;
   top: 0;
+  width: 76vw;
   transition: 0.3s ease-in-out;
-  background-color: none;
+  background-color: ${({ nav_bg }: props) => nav_bg ? 'rgba(0,0,0,0.7)' : 'none'};
   .search_bar {
     background-color: white;
     width: 30%;
@@ -62,33 +89,5 @@ const Container = styled.div`
     }
   }
 `;
-
-interface props {
-  user: user_data;
-}
-
-
-
-const NavBar = ({ user }: props) => {
-  return (
-    
-  <Container>
-    
-    <div className="search_bar">
-      <IconContext.Provider value={{ color: 'black', }}>
-        <FaSearch />
-      </IconContext.Provider>
-      <input type="text" placeholder="Artists, songs, or podcasts" />
-    </div>
-
-    <div className="avatar">
-      <CgProfile />
-      <span>{user.name}</span>
-    </div>
-
-  </Container>
-    
-  )
-}
 
 export default NavBar

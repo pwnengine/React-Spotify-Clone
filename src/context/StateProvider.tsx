@@ -86,6 +86,13 @@ export type playlist_item = {
   uri: string,
 };
 
+type currently_playing_type = {
+  id: string,
+  name: string,
+  artists: string[],
+  image: string,
+};
+
 interface props {
   children: ReactElement | ReactElement[];
 }
@@ -100,16 +107,22 @@ const init_state = {
     description: '', 
     image: '', 
     tracks: [{
-         id: '',
-        name: '',
-        artists: [],
-        image: '',
-        duration: 0,
-        album: '',
-        context_uri: '',
-        track_number: 0,
-      }],
-   },
+      id: '',
+      name: '',
+      artists: [],
+      image: '',
+      duration: 0,
+      album: '',
+      context_uri: '',
+      track_number: 0,
+    }],
+  },
+  currently_playing: {
+    id: '',
+    name: '',
+    artists: [''],
+    image: '',
+  }
 };
 
 type state_type = {
@@ -117,6 +130,7 @@ type state_type = {
   playlists: playlist_item[],
   selected_playlist_id: string,
   playlist_info: playlist_info_type,
+  currently_playing: currently_playing_type,
 };
 
 type payload_type = {
@@ -124,6 +138,7 @@ type payload_type = {
   playlists: playlist_item[],
   selected_playlist_id: string,
   playlist_info: playlist_info_type,
+  currently_playing: currently_playing_type,
 }
 
 type action_type = {
@@ -140,6 +155,8 @@ const AppContext = createContext<{
   set_selected_playlist_id: (playlist_id: string) => void,
   playlist_info: playlist_info_type,
   set_playlist_info: (playlist_info: playlist_info_type) => void,
+  currently_playing: currently_playing_type,
+  set_currently_playing: (currently_playing: currently_playing_type) => void,
 }>({
   token: 'null',
   set_token: () => null,
@@ -166,6 +183,13 @@ const AppContext = createContext<{
     }],
   },
   set_playlist_info: () => null,
+  currently_playing: {
+    id: '',
+    name: '',
+    artists: [''],
+    image: '',
+  },
+  set_currently_playing: () => null,
 });
 
 const reducer_fn = (state: state_type, action: action_type) => {
@@ -184,6 +208,9 @@ const reducer_fn = (state: state_type, action: action_type) => {
     case 'SET_PLAYLIST_INFO':
       console.log('playlist information has been set to: ' + action.payload.playlist_info);
       return { ...state, playlist_info: action.payload.playlist_info };
+    case 'SET_CURRENTLY_PLAYING':
+      console.log('currently playing has been set to: ' + action.payload.currently_playing);
+      return { ...state, currently_playing: action.payload.currently_playing };
   }
 };
 
@@ -198,6 +225,7 @@ const StateProvider = ({ children }: props) => {
         playlists: state.playlists,
         selected_playlist_id: state.selected_playlist_id,
         playlist_info: state.playlist_info,
+        currently_playing: state.currently_playing,
       },
     });
   };
@@ -210,6 +238,7 @@ const StateProvider = ({ children }: props) => {
         playlists: playlists,
         selected_playlist_id: state.selected_playlist_id,
         playlist_info: state.playlist_info,
+        currently_playing: state.currently_playing,
       },
     });
   };
@@ -222,6 +251,7 @@ const StateProvider = ({ children }: props) => {
         playlists: state.playlists,       
         selected_playlist_id: id,
         playlist_info: state.playlist_info,
+        currently_playing: state.currently_playing,
       },
     });
   };
@@ -234,7 +264,20 @@ const StateProvider = ({ children }: props) => {
         playlists: state.playlists,
         selected_playlist_id: state.selected_playlist_id,
         playlist_info: playlist_info,
+        currently_playing: state.currently_playing,
+      },
+    });
+  };
 
+  const set_currently_playing = (currently_playing: currently_playing_type) => {
+    dispatch({
+      type: 'SET_CURRENTLY_PLAYING',
+      payload: {
+        token: state.token,
+        playlists: state.playlists,
+        selected_playlist_id: state.selected_playlist_id,
+        playlist_info: state.playlist_info,
+        currently_playing: currently_playing,
       },
     });
   };
@@ -248,6 +291,8 @@ const StateProvider = ({ children }: props) => {
     set_selected_playlist_id,
     playlist_info: state.playlist_info,
     set_playlist_info,
+    currently_playing: state.currently_playing,
+    set_currently_playing,
   };
 
   return (

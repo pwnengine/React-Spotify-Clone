@@ -1,10 +1,14 @@
 import styled from 'styled-components'
 import { AiFillClockCircle } from 'react-icons/ai'
-import { useProvider, artist, tracks_info, tracks_type } from '../context/StateProvier';
+import { useProvider, artist, tracks_info, tracks_type } from '../context/StateProvider';
 import { useEffect } from 'react';
 import axios from 'axios'
 
-const Container = styled.div`
+const Container = styled.div<props>`
+  .topbottom {
+    display: flex;
+    flex-direction: column;
+    
   .playlist {
     margin: 0 3rem;
     display: flex;
@@ -30,19 +34,22 @@ const Container = styled.div`
 
   .list {
     .header_row {
+      
+      margin-top: 0px;
+      background-color: ${ ({ header_bg }: props) => header_bg ? '#000000dc' : 'none' };
       display: grid;
-      grid-template-columns: 0.13fr 0.35fr 0.3fr 0.1fr;
-      color: #dddcdc;
-      margin: 1rem 0 0 1rem;
+      grid-template-columns: 0.3fr 2.5fr 2fr 0.1fr;
+      color: rgb(221, 220, 220);
+      margin: 0rem 0rem 0rem 0rem;
       position: sticky;
-      top: 15vh;
-      padding: 1rem 3rem;
+      top: 14vh;
+      padding: 1rem 7.1rem 1rem 2rem;
       transition: 0.3s ease-in-out;
 
     }
     .tracks {
-      margin: 0.6rem 0.1rem;
-      margin-right: 5rem;
+      
+      //margin: 0.6rem 0.1rem;
       display: flex;
       flex-direction: column;
       margin-bottom: 5rem;
@@ -52,7 +59,7 @@ const Container = styled.div`
         padding-right: 5rem;
         padding-left: 2rem;
         display: grid;
-        grid-template-columns: 0.3fr 2.5fr 2fr 0.1fr;
+        grid-template-columns: 0.1fr 0.9fr 0.7fr 0.1fr;
         &:hover {
           background-color: rgba(0,0,0,0.7);
 
@@ -69,9 +76,7 @@ const Container = styled.div`
       }
 
       .col {
-        padding-top: 0.5rem;
-        padding-right: 5rem;
-        padding-left: 2rem;
+        
           display: flex;
           align-items: center;
           color: #dddcdc;
@@ -81,9 +86,14 @@ const Container = styled.div`
         }
     }
   }
+}
 `;
 
-const Body = () => {
+interface props {
+  header_bg: boolean;
+}
+
+const Body = ({ header_bg }: props) => {
   const { token, selected_playlist_id, playlist_info, set_playlist_info } = useProvider();
 
   useEffect(() => {
@@ -126,11 +136,17 @@ const Body = () => {
     get_playlist();
   }, [selected_playlist_id]);
 
+  const ms_to_mins = (ms: number) => {
+    const min = Math.floor(ms / 60000);
+    const secs = ((ms % 60000) / 1000).toFixed(0);
+    return String(min) + ':' + (Number(secs) < 10 ? '0' : secs);
+  };
+
   return (
-    <Container>
+    <Container header_bg={header_bg}>
       {
         selected_playlist_id && (
-          <>
+          <div className="topbottom">
             <div className="playlist">
               <div className="image">
                 <img src={playlist_info.image} alt="selected playlist image" />
@@ -193,7 +209,7 @@ const Body = () => {
                         
 
                         <div className="col">
-                          <span>{duration}</span>
+                          <span>{ms_to_mins(duration)}</span>
                         </div>
                       </div>
                       )
@@ -204,7 +220,7 @@ const Body = () => {
 
             </div>
 
-          </>
+          </div>
         )
       }
       
