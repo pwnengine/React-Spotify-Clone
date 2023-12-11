@@ -61,14 +61,6 @@ const Playlists = () => {
       {  
         playlists.map(({ name, id }: playlist_item) => {
           return ( 
-            <li key={id}>{name}</li>
-
-          );
-        })
-      }
-      {  
-        playlists.map(({ name, id }: playlist_item) => {
-          return ( 
             <li onClick={() => set_selected_playlist_id(id)} key={id}>{name}</li>
 
           );
