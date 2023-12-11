@@ -54,8 +54,8 @@ const Spotify = () => {
   const { token } = useProvider();
 
   const body_ref = useRef<HTMLDivElement>(null);
-  const [nav_bg, set_nav_bg] = useState(false);
-  const [header_bg, set_header_bg] = useState(false);
+  const [nav_bg, set_nav_bg] = useState<boolean>(false);
+  const [header_bg, set_header_bg] = useState<boolean>(false);
 
   const body_scrolled = () => {
     if(body_ref != null && body_ref != undefined) {

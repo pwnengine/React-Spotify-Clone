@@ -122,7 +122,8 @@ const init_state = {
     name: '',
     artists: [''],
     image: '',
-  }
+  },
+  player_state: false,
 };
 
 type state_type = {
@@ -131,6 +132,7 @@ type state_type = {
   selected_playlist_id: string,
   playlist_info: playlist_info_type,
   currently_playing: currently_playing_type,
+  player_state: boolean,
 };
 
 type payload_type = {
@@ -139,6 +141,7 @@ type payload_type = {
   selected_playlist_id: string,
   playlist_info: playlist_info_type,
   currently_playing: currently_playing_type,
+  player_state: boolean,
 }
 
 type action_type = {
@@ -157,6 +160,8 @@ const AppContext = createContext<{
   set_playlist_info: (playlist_info: playlist_info_type) => void,
   currently_playing: currently_playing_type,
   set_currently_playing: (currently_playing: currently_playing_type) => void,
+  player_state: boolean,
+  set_player_state: (player_state: boolean) => void,
 }>({
   token: 'null',
   set_token: () => null,
@@ -190,6 +195,8 @@ const AppContext = createContext<{
     image: '',
   },
   set_currently_playing: () => null,
+  player_state: false,
+  set_player_state: () => null,
 });
 
 const reducer_fn = (state: state_type, action: action_type) => {
@@ -211,6 +218,9 @@ const reducer_fn = (state: state_type, action: action_type) => {
     case 'SET_CURRENTLY_PLAYING':
       console.log('currently playing has been set to: ' + action.payload.currently_playing);
       return { ...state, currently_playing: action.payload.currently_playing };
+    case 'SET_PLAYER_STATE':
+      console.log('player state set to: ' + action.payload.player_state);
+      return { ...state, player_state: action.payload.player_state };
   }
 };
 
@@ -226,6 +236,7 @@ const StateProvider = ({ children }: props) => {
         selected_playlist_id: state.selected_playlist_id,
         playlist_info: state.playlist_info,
         currently_playing: state.currently_playing,
+        player_state: state.player_state,
       },
     });
   };
@@ -239,6 +250,7 @@ const StateProvider = ({ children }: props) => {
         selected_playlist_id: state.selected_playlist_id,
         playlist_info: state.playlist_info,
         currently_playing: state.currently_playing,
+        player_state: state.player_state,
       },
     });
   };
@@ -252,6 +264,7 @@ const StateProvider = ({ children }: props) => {
         selected_playlist_id: id,
         playlist_info: state.playlist_info,
         currently_playing: state.currently_playing,
+        player_state: state.player_state,
       },
     });
   };
@@ -265,6 +278,7 @@ const StateProvider = ({ children }: props) => {
         selected_playlist_id: state.selected_playlist_id,
         playlist_info: playlist_info,
         currently_playing: state.currently_playing,
+        player_state: state.player_state,
       },
     });
   };
@@ -278,6 +292,21 @@ const StateProvider = ({ children }: props) => {
         selected_playlist_id: state.selected_playlist_id,
         playlist_info: state.playlist_info,
         currently_playing: currently_playing,
+        player_state: state.player_state,
+      },
+    });
+  };
+
+  const set_player_state = (player_state: boolean) => {
+    dispatch({
+      type: 'SET_PLAYER_STATE',
+      payload: {
+        token: state.token,
+        playlists: state.playlists,
+        selected_playlist_id: state.selected_playlist_id,
+        playlist_info: state.playlist_info,
+        currently_playing: state.currently_playing,
+        player_state: player_state,
       },
     });
   };
@@ -293,6 +322,8 @@ const StateProvider = ({ children }: props) => {
     set_playlist_info,
     currently_playing: state.currently_playing,
     set_currently_playing,
+    player_state: state.player_state,
+    set_player_state: set_player_state,
   };
 
   return (

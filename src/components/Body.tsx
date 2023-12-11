@@ -94,7 +94,7 @@ interface props {
 }
 
 const Body = ({ header_bg }: props) => {
-  const { token, selected_playlist_id, playlist_info, set_playlist_info } = useProvider();
+  const { token, selected_playlist_id, playlist_info, set_playlist_info, set_currently_playing, set_player_state } = useProvider();
 
   useEffect(() => {
     const get_playlist = async () => {
@@ -142,6 +142,37 @@ const Body = ({ header_bg }: props) => {
     return String(min) + ':' + (Number(secs) < 10 ? '0' : secs);
   };
 
+  const play_track = async (id: string, name: string, artists: string[], image: string, context_uri: string, track_number: number) => {
+    const res = await axios.put(`https://api.spotify.com/v1/me/player/play`,
+      {
+        context_uri, 
+        offset: {
+          position: track_number - 1,
+        },
+        position_ms: 0,
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      }
+    );
+
+    if(res.status === 204) {
+      const curr_playing = {
+        id,
+        name,
+        artists,
+        image,
+      };
+
+      set_currently_playing(curr_playing);
+      set_player_state(true);
+    } else {
+      set_player_state(true);
+    }
+  };
+
   return (
     <Container header_bg={header_bg}>
       {
@@ -185,7 +216,7 @@ const Body = ({ header_bg }: props) => {
                 {
                   playlist_info.tracks?.map(({ id, name, artists, image, duration, album, context_uri, track_number }: tracks_type, index) => {
                     return (
-                      <div className="row" key={id}>
+                      <div className="row" key={id} onClick={() => play_track(id, name, artists.map((artist) => artist.name), image, context_uri, track_number)}>
                         <div className="col">
                           <span>{index+1}</span>
                         </div>
@@ -197,7 +228,7 @@ const Body = ({ header_bg }: props) => {
 
                           <div className="info">
                             <span className="name">{name}</span>
-                            <span>{artists.map((val) => (<p>{val.name}</p>))}</span>
+                            <span>{artists.map((val) => (<p key={val.name}>{val.name}</p>))}</span>
                           </div>
                         </div>
 

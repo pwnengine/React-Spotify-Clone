@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 import CurrentTrack from './CurrentTrack';
+import PlayerControls from './PlayerControls';
+import Volume from './Volume';
 
 const Container = styled.div`
   z-index: 999;
@@ -18,6 +20,8 @@ const Footer = () => {
   return (
     <Container>
       <CurrentTrack />
+      <PlayerControls />
+      <Volume />
     </Container>
   )
 }
